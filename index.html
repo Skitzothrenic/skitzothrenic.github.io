@@ -1,20 +1,23 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Eurostep | Basketball Analysis</title>
+    <!-- Importiamo Google Fonts per un look super moderno -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Libreria Three.js per l'effetto 3D interattivo -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        /* Stili Generali e Tema Futuristco basato sul Logo */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
-            background-color: #0b0f19;
+            background-color: #030508;
             color: #f3f4f6;
             overflow-x: hidden;
             min-height: 100vh;
@@ -23,41 +26,43 @@
             justify-content: space-between;
         }
 
-        /* Effetto Sfondo Luminoso / Griglia Futuristca */
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 20%, rgba(255,255,255,0.05) 0%, transparent 60%),
-                        linear-gradient(to bottom, #0b0f19, #020408);
+        /* Canvas 3D sullo sfondo che reagisce al mouse */
+        #webgl-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
             z-index: -1;
+            pointer-events: none;
         }
 
-        /* Barra Superiore / Header */
+        /* Header Futuristico */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 40px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(11, 15, 25, 0.8);
-            backdrop-filter: blur(10px);
+            padding: 25px 50px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(3, 5, 8, 0.7);
+            backdrop-filter: blur(15px);
             position: sticky;
             top: 0;
             z-index: 1000;
         }
 
         .logo-area {
-            font-weight: 800;
-            font-size: 1.2rem;
-            letter-spacing: 2px;
-            background: linear-gradient(45deg, #ffffff, #9ca3af);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 1.4rem;
+            letter-spacing: 3px;
+            background: linear-gradient(135deg, #ffffff 30%, #6b7280 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-transform: uppercase;
+            text-shadow: 0 0 30px rgba(255,255,255,0.2);
         }
 
-        /* Menu a scomparsa futuristico (Pulsante Hamburger) */
         .menu-toggle {
             cursor: pointer;
             display: flex;
@@ -67,69 +72,95 @@
 
         .menu-toggle span {
             display: block;
-            width: 30px;
+            width: 32px;
             height: 2px;
             background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(255,255,255,0.8);
             transition: 0.3s;
         }
 
-        /* Contenuto Centrale */
+        /* Contenuto Principale con effetto Olografico */
         .hero {
             text-align: center;
-            padding: 80px 20px;
-            max-width: 900px;
+            padding: 100px 20px;
+            max-width: 1000px;
             margin: 0 auto;
+            z-index: 1;
         }
 
         .hero h1 {
-            font-size: 3rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 900;
             margin-bottom: 20px;
-            letter-spacing: -1px;
-            text-shadow: 0 0 20px rgba(255,255,255,0.2);
+            letter-spacing: 2px;
+            color: #ffffff;
+            text-shadow: 0 0 40px rgba(255, 255, 255, 0.3);
+            text-transform: uppercase;
         }
 
         .hero p {
             color: #9ca3af;
-            font-size: 1.2rem;
-            margin-bottom: 40px;
+            font-size: 1.25rem;
+            margin-bottom: 50px;
+            font-weight: 300;
+            letter-spacing: 0.5px;
         }
 
-        /* Pulsanti di navigazione rapida sezioni */
+        /* Griglia Sezioni 3D Card */
         .sections-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            max-width: 700px;
-            margin: 0 auto 50px auto;
+            gap: 30px;
+            max-width: 800px;
+            margin: 0 auto 60px auto;
         }
 
         .card-section {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(15, 23, 42, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 30px;
-            border-radius: 12px;
-            transition: all 0.3s ease;
+            padding: 40px 30px;
+            border-radius: 16px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             cursor: pointer;
             text-decoration: none;
             color: inherit;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.08) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .card-section:hover::before {
+            opacity: 1;
         }
 
         .card-section:hover {
-            background: rgba(255, 255, 255, 0.07);
-            border-color: rgba(255, 255, 255, 0.3);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 255, 255, 0.1);
         }
 
         .card-section h3 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #ffffff;
+            letter-spacing: 1px;
         }
 
         .card-section p {
-            font-size: 0.95rem;
+            font-size: 1rem;
             margin-bottom: 0;
+            color: #9ca3af;
         }
 
         /* Footer */
@@ -137,45 +168,117 @@
             text-align: center;
             padding: 30px;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
-            color: #6b7280;
-            font-size: 0.9rem;
+            color: #4b5563;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            z-index: 1;
         }
     </style>
 </head>
 <body>
 
-    <!-- Header con Logo e Menu -->
+    <!-- Sfondo Interattivo 3D -->
+    <div id="webgl-container"></div>
+
+    <!-- Header -->
     <header>
         <div class="logo-area">The Eurostep &bull; Analysis</div>
-        <div class="menu-toggle" title="Menu a scomparsa">
+        <div class="menu-toggle" title="Menu">
             <span></span>
             <span></span>
             <span></span>
         </div>
     </header>
 
-    <!-- Sezione Principale (Hero) -->
+    <!-- Main Hero -->
     <div class="hero">
-        <h1>Basketball Analysis nel Futuro</h1>
-        <p>L'hub definitivo diviso e speculare per veri intenditori: analisi profonde, statistiche, minigiochi e pronostici.</p>
+        <h1>Next-Gen Basketball Hub</h1>
+        <p>The ultimate split ecosystem for true connoisseurs: deep analytics, live stats, minigames, and predictors.</p>
         
-        <!-- Le due macro-sezioni scisse -->
         <div class="sections-grid">
             <a href="#" class="card-section">
                 <h3>NBA Hub</h3>
-                <p>Articoli, Roster, Statistiche e Pronostici dedicati al mondo americano.</p>
+                <p>Articles, Rosters, Advanced Stats & Predictors dedicated to the American league.</p>
             </a>
             <a href="#" class="card-section">
                 <h3>Euroleague Hub</h3>
-                <p>Analisi, Calendari, Box Score e statistiche del grande basket europeo.</p>
+                <p>Deep analysis, Calendars, Box Scores & European basketball statistics.</p>
             </a>
         </div>
     </div>
 
     <!-- Footer -->
     <footer>
-        &copy; 2026 The Eurostep | Basketball Analysis. Tutti i diritti riservati.
+        &copy; 2026 The Eurostep | Basketball Analysis. All rights reserved.
     </footer>
 
+    <!-- Script JavaScript per il motore 3D e l'interazione col mouse -->
+    <script>
+        // Configurazione Sfondo 3D con Three.js (Particelle / Sfera futuristica ispirata al logo)
+        const container = document.getElementById('webgl-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        // Creazione di un campo di particelle 3D fluttuanti
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 1500;
+        const posArray = new Float32Array(particlesCount * 3);
+
+        for(let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 10;
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.015,
+            color: 0xffffff,
+            transparent: true,
+            opacity: 0.6
+        });
+
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        camera.position.z = 3;
+
+        // Interazione col movimento del mouse
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetX = 0;
+        let targetY = 0;
+
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX - window.innerWidth / 2) / 500;
+            mouseY = (event.clientY - window.innerHeight / 2) / 500;
+        });
+
+        // Animazione fluida (Render loop)
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            targetX = mouseX * 0.5;
+            targetY = mouseY * 0.5;
+
+            particlesMesh.rotation.y += 0.001 + (targetX - particlesMesh.rotation.y) * 0.05;
+            particlesMesh.rotation.x += 0.001 + (targetY - particlesMesh.rotation.x) * 0.05;
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Adattamento al ridimensionamento della finestra
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
 </body>
 </html>
