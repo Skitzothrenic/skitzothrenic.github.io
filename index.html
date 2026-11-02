@@ -1,434 +1,702 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Eurostep | Basketball Analysis</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
-        body {
-            background-color: #030508;
-            color: #f3f4f6;
-            overflow-x: hidden;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        #webgl-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        /* Header con Logo, Scritta a Sinistra e Navigazione Orizzontale */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 40px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            background: rgba(3, 5, 8, 0.92);
-            backdrop-filter: blur(15px);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        /* Gruppo Logo + Scritta a Sinistra */
-        .brand-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            transition: transform 0.3s ease, filter 0.3s ease;
-        }
-
-        .brand-container:hover {
-            transform: scale(1.02);
-            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
-        }
-
-        .brand-logo {
-            height: 52px;
-            width: auto;
-            object-fit: contain;
-        }
-
-        .brand-title-text {
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 700;
-            font-size: 1.15rem;
-            letter-spacing: 1.5px;
-            background: linear-gradient(135deg, #ffffff 30%, #9ca3af 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
-        }
-
-        /* Navigazione Orizzontale */
-        .nav-menu {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-            list-style: none;
-        }
-
-        .nav-item {
-            position: relative;
-        }
-
-        .nav-link {
-            color: #d1d5db;
-            text-decoration: none;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 700;
-            letter-spacing: 1.2px;
-            text-transform: uppercase;
-            padding: 10px 0;
-            transition: color 0.3s ease;
-            display: block;
-        }
-
-        .nav-link:hover {
-            color: #ffffff;
-        }
-
-        /* Sottotenda (Dropdown) centrati perfettamente sotto la voce */
-        .dropdown-content {
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%) translateY(10px);
-            background: rgba(5, 8, 15, 0.96);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 10px;
-            min-width: 200px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(20px);
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            padding: 10px 0;
-            z-index: 1100;
-        }
-
-        .nav-item:hover .dropdown-content {
-            opacity: 1;
-            visibility: visible;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .dropdown-content a {
-            display: block;
-            padding: 8px 20px;
-            color: #9ca3af;
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            text-transform: none;
-            letter-spacing: normal;
-        }
-
-        .dropdown-content a:hover {
-            background: rgba(255, 255, 255, 0.08);
-            color: #ffffff;
-            padding-left: 25px;
-        }
-
-        /* Main Container Magazine Style */
-        .magazine-container {
-            max-width: 1300px;
-            margin: 40px auto;
-            padding: 0 30px;
-            z-index: 1;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 40px;
-        }
-
-        /* Sezione Principale: Articolo Grande + Articoli Scorrevoli a fianco */
-        .hero-magazine-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 25px;
-        }
-
-        /* Articolo Principale in Evidenza */
-        .main-featured-article {
-            background: rgba(11, 15, 25, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            overflow: hidden;
-            backdrop-filter: blur(12px);
-            display: flex;
-            flex-direction: column;
-            transition: border-color 0.3s ease;
-        }
-
-        .main-featured-article:hover {
-            border-color: rgba(255, 255, 255, 0.25);
-        }
-
-        .article-img-placeholder {
-            width: 100%;
-            height: 320px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #4b5563;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .article-content {
-            padding: 25px;
-        }
-
-        .article-tag {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.7rem;
-            color: #60a5fa;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        .article-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.5rem;
-            color: #ffffff;
-            margin-bottom: 12px;
-            line-height: 1.3;
-        }
-
-        .article-snippet {
-            color: #9ca3af;
-            font-size: 0.95rem;
-            line-height: 1.6;
-            font-weight: 400;
-        }
-
-        /* Colonna Articoli in Evidenza Laterali */
-        .side-articles-column {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .side-article-card {
-            background: rgba(11, 15, 25, 0.65);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
-            padding: 18px;
-            backdrop-filter: blur(12px);
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .side-article-card:hover {
-            border-color: rgba(255, 255, 255, 0.25);
-            transform: translateY(-2px);
-        }
-
-        .side-article-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1rem;
-            color: #ffffff;
-            line-height: 1.4;
-        }
-
-        /* Griglia Articoli Inferiori */
-        .secondary-articles-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
-        }
-
-        .grid-article-card {
-            background: rgba(11, 15, 25, 0.65);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 14px;
-            overflow: hidden;
-            backdrop-filter: blur(12px);
-            transition: all 0.3s ease;
-        }
-
-        .grid-article-card:hover {
-            border-color: rgba(255, 255, 255, 0.25);
-            transform: translateY(-3px);
-        }
-
-        .grid-img-placeholder {
-            width: 100%;
-            height: 160px;
-            background: rgba(255, 255, 255, 0.03);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #4b5563;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.75rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .grid-content {
-            padding: 20px;
-        }
-
-        .grid-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.1rem;
-            color: #ffffff;
-            margin-bottom: 10px;
-            line-height: 1.3;
-        }
-
-        /* Pulsante "See more articles" in fondo alla pagina */
-        .see-more-container {
-            display: flex;
-            justify-content: center;
-            margin-top: 10px;
-        }
-
-        .see-more-btn {
-            display: inline-block;
-            width: 100%;
-            max-width: 320px;
-            text-align: center;
-            padding: 14px 24px;
-            background: rgba(11, 15, 25, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 12px;
-            color: #f3f4f6;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-decoration: none;
-            text-transform: uppercase;
-            backdrop-filter: blur(12px);
-            transition: all 0.3s ease;
-        }
-
-        .see-more-btn:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.3);
-            color: #ffffff;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.08);
-            transform: translateY(-2px);
-        }
-
-        footer {
-            text-align: center;
-            padding: 25px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            color: #4b5563;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-            z-index: 1;
-            margin-top: 50px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>powerk - اتحكم في المشترك الكوري من جيبك</title>
+  <meta name="description" content="powerk تطبيق يساعدك على التحكم في المشترك الكوري من جيبك بسهولة. صفحة تحميل رسمية مع إرشادات واضحة لتشغيل التطبيق على Windows.">
+  <meta name="keywords" content="powerk, المشترك الكوري, تحكم من الجيب, تطبيق Windows, تح<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="powerk تطبيق للتحكم في المشترك الكوري من جيبك. حمّل التطبيق الآن من صفحة GitHub الرسمية. إرشادات سهلة للمستخدم العادي.">
+  <meta name="keywords" content="powerk, المشترك الكوري, تحكم عن بعد, تطبيق Windows, تحميل powerk, GitHub">
+  <meta name="author" content="Skitzothrenic">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="powerk - اتحكم في المشترك الكوري من جيبك">
+  <meta property="og:description" content="تطبيق powerk يتيح لك التحكم في المشترك الكوري من جهاز الكمبيوتر. تحميل مباشر من GitHub.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://github.com/Skitzothrenic/powerk">
+  <title>powerk - اتحكم في المشترك الكوري من جيبك</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f4f8;
+      color: #1e2a3a;
+      line-height: 1.7;
+      font-size: 18px;
+      padding: 20px;
+    }
+    .container {
+      max-width: 850px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 40px 30px;
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+    h1 {
+      font-size: 2.4rem;
+      color: #0b1e33;
+      margin-bottom: 15px;
+      line-height: 1.3;
+      font-weight: 800;
+    }
+    h2 {
+      font-size: 1.9rem;
+      color: #1a3b5d;
+      margin-top: 40px;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 3px solid #e2e8f0;
+      font-weight: 700;
+    }
+    p {
+      margin-bottom: 18px;
+      color: #2d3f53;
+    }
+    .tagline {
+      font-size: 1.3rem;
+      color: #3a5a7a;
+      margin-bottom: 30px;
+      font-weight: 500;
+    }
+    .button {
+      display: inline-block;
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      color: #ffffff;
+      padding: 18px 40px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.3rem;
+      box-shadow: 0 8px 20px rgba(37, 117, 252, 0.3);
+      transition: all 0.3s ease;
+      margin: 20px 0 30px 0;
+      text-align: center;
+      border: none;
+    }
+    .button:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(37, 117, 252, 0.45);
+    }
+    .button-small {
+      font-size: 1.1rem;
+      padding: 14px 28px;
+      margin: 10px 0;
+    }
+    ul, ol {
+      margin-bottom: 20px;
+      padding-right: 25px;
+    }
+    li {
+      margin-bottom: 10px;
+      color: #2d3f53;
+    }
+    a {
+      color: #2575fc;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .note {
+      background: #fef9e7;
+      border-right: 5px solid #f1c40f;
+      padding: 18px 22px;
+      border-radius: 12px;
+      margin: 25px 0;
+      font-size: 1rem;
+      color: #7a5c00;
+    }
+    .note strong {
+      color: #5c4600;
+    }
+    .section-card {
+      background: #f8fafc;
+      border-radius: 18px;
+      padding: 25px 30px;
+      margin: 30px 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    }
+    .footer {
+      margin-top: 50px;
+      padding-top: 25px;
+      border-top: 2px solid #e2e8f0;
+      text-align: center;
+      font-size: 0.95rem;
+      color: #6b7a8a;
+    }
+    .faq-item {
+      margin-bottom: 20px;
+    }
+    .faq-item strong {
+      display: block;
+      font-size: 1.15rem;
+      color: #1a3b5d;
+      margin-bottom: 5px;
+    }
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      .container {
+        padding: 25px 18px;
+        border-radius: 18px;
+      }
+      h1 {
+        font-size: 1.9rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      .button {
+        padding: 15px 25px;
+        font-size: 1.1rem;
+        width: 100%;
+      }
+      .tagline {
+        font-size: 1.1rem;
+      }
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <h1>🎮 powerk - تحكم في المشترك الكوري بسهولة</h1>
+    <p class="tagline">التطبيق الذي يمنحك التحكم الكامل في المشترك الكوري من راحة يدك. سهل الاستخدام، ويعمل على Windows.</p>
+    <a href="https://github.com/Skitzothrenic/powerk" class="button" target="_blank" rel="noopener">📥 تحميل powerk الآن</a>
 
-    <div id="webgl-container"></div>
+    <h2>✨ ما هو powerk؟</h2>
+    <p>powerk هو تطبيق مبتكر يتيح لك التحكم في المشترك الكوري (جهاز استقبال القنوات الكورية) من خلال جهاز الكمبيوتر الذي يعمل بنظام Windows. بفضل واجهته البسيطة، يمكنك إدارة القنوات والإعدادات دون الحاجة إلى خبرة تقنية. سواء كنت تستخدم المشترك الكوري لمشاهدة القنوات المفضلة أو لإدارة الاشتراكات، فإن powerk يجعل كل شيء أسهل وأسرع.</p>
+    <p>تم تصميم التطبيق ليكون في متناول المستخدم العادي، فلا يحتاج إلى إعدادات معقدة أو معرفة برمجية. كل ما عليك فعله هو تحميل التطبيق وتشغيله، ثم البدء في التحكم في المشترك الكوري من جهاز الكمبيوتر الخاص بك.</p>
 
-    <!-- Header con Logo, Scritta e 5 Macrosezioni -->
-    <header>
-        <!-- Logo e Testo a Sinistra con link alla Home -->
-        <a href="#" class="brand-container" title="The Eurostep Home">
-            <img src="the eurostep no background.png" alt="The Eurostep Logo" class="brand-logo">
-            <span class="brand-title-text">The Eurostep</span>
-        </a>
+    <h2>🚀 المميزات الرئيسية</h2>
+    <ul>
+      <li><strong>تحكم كامل:</strong> إدارة جميع وظائف المشترك الكوري من جهاز الكمبيوتر.</li>
+      <li><strong>واجهة بسيطة:</strong> تصميم سهل الاستخدام يناسب المبتدئين والمحترفين.</li>
+      <li><strong>توافق مع Windows:</strong> يعمل بسلاسة على أنظمة Windows الحديثة.</li>
+      <li><strong>تثبيت سريع:</strong> لا يحتاج إلى خطوات معقدة، فقط حمّل وافتح.</li>
+      <li><strong>دعم مفتوح المصدر:</strong> يمكنك الاطلاع على الكود والمساهمة عبر GitHub.</li>
+    </ul>
 
-        <!-- Barra di Navigazione Orizzontale -->
-        <ul class="nav-menu">
-            <!-- 1. NBA -->
-            <li class="nav-item">
-                <a href="#" class="nav-link">NBA</a>
-                <div class="dropdown-content">
-                    <a href="#">Articles</a>
-                    <a href="#">Scores & Box Scores</a>
-                    <a href="#">Stats & Leaders</a>
-                    <a href="#">Rosters</a>
-                </div>
-            </li>
+    <h2>⚙️ متطلبات النظام</h2>
+    <p>قبل تثبيت powerk، تأكد من أن جهازك يلبي المتطلبات التالية:</p>
+    <ul>
+      <li>نظام التشغيل: Windows 10 أو Windows 11 (64 بت).</li>
+      <li>مساحة تخزين: 100 ميجابايت على الأقل.</li>
+      <li>الذاكرة: 4 جيجابايت RAM أو أكثر.</li>
+      <li>اتصال بالإنترنت لتحميل التطبيق.</li>
+    </ul>
 
-            <!-- 2. Euroleague -->
-            <li class="nav-item">
-                <a href="#" class="nav-link">Euroleague</a>
-                <div class="dropdown-content">
-                    <a href="#">Articles</a>
-                    <a href="#">Scores & Box Scores</a>
-                    <a href="#">Stats & Leaders</a>
-                    <a href="#">Rosters</a>
-                </div>
-            </li>
+    <h2>📥 كيفية التحميل والتثبيت</h2>
+    <p>لتحميل powerk، قم بزيارة رابط التحميل الرسمي:</p>
+    <p style="text-align: center; margin: 25px 0;">
+      <a href="https://github.com/Skitzothrenic/powerk" class="button button-small" target="_blank" rel="noopener">🔗 زيارة رابط التحميل</a>
+    </p>
+    <p>عند زيارة الرابط، ستنتقل إلى صفحة GitHub الخاصة بالتطبيق. ابحث عن قسم "Releases" أو "Code" وقم بتحميل ملف التطبيق. بعد اكتمال التحميل، افتح الملف الذي تم تنزيله لتشغيل التطبيق.</p>
+    <div class="note">
+      <strong>ملاحظة:</strong> قد يظهر تحذير من Windows عند تشغيل التطبيق لأول مرة. هذا طبيعي، اضغط على "مزيد من المعلومات" ثم "تشغيل على أي حال".
+    </div>
 
-            <!-- 3. Minigames -->
-            <li class="nav-item">
-                <a href="#" class="nav-link">Minigames</a>
-                <div class="dropdown-content">
-                    <a href="#">NBA Hoops Grid</a>
-                    <a href="#">Euroleague Predictor</a>
-                    <a href="#">Daily Trivia</a>
-                </div>
-            </li>
+    <h2>❓ الأسئلة الشائعة</h2>
+    <div class="faq-item">
+      <strong>هل التطبيق مجاني؟</strong>
+      <p>نعم، powerk مفتوح المصدر ومجاني بالكامل. يمكنك تحميله واستخدامه دون أي تكلفة.</p>
+    </div>
+    <div class="faq-item">
+      <strong>هل يعمل على أجهزة الماك؟</strong>
+      <p>لا، التطبيق مخصص لنظام Windows فقط. إذا كنت تستخدم نظاماً آخر، فقد تحتاج إلى برنامج محاكاة.</p>
+    </div>
+    <div class="faq-item">
+      <strong>كيف أحصل على الدعم؟</strong>
+      <p>يمكنك فتح مشكلة (Issue) في مستودع GitHub الخاص بالتطبيق، أو الاطلاع على التعليمات الموجودة في الصفحة.</p>
+    </div>
+    <div class="faq-item">
+      <strong>هل يحتاج التطبيق إلى اتصال بالإنترنت؟</strong>
+      <p>يحتاج التطبيق إلى اتص<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>powerk - اتحكم في المشترك الكوري من جيبك</title>
+  <meta name="description" content="powerk تطبيق يساعدك على التحكم في المشترك الكوري من جهاز الكمبيوتر. صفحة تحميل رسمية مع رابط مباشر إلى GitHub وإرشادات بسيطة للمستخدم العادي.">
+  <meta name="keywords" content="powerk, المشترك الكوري, التحكم في المشترك الكوري, تحميل powerk, تطبيق Windows, GitHub, Skitzothrenic">
+  <meta name="author" content="Skitzothrenic">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://github.com/Skitzothrenic/powerk">
+  <meta property="og:title" content="powerk - اتحكم في المشترك الكوري من جيبك">
+  <meta property="og:description" content="تطبيق powerk يتيح لك التحكم في المشترك الكوري بسهولة من جهاز الكمبيوتر. حمّل التطبيق من صفحة GitHub الرسمية.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://github.com/Skitzothrenic/powerk">
+  <meta property="og:locale" content="ar_AR">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      background: #eef3f8;
+      color: #1d2b3a;
+      line-height: 1.8;
+      font-size: 18px;
+      padding: 24px 16px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 42px 34px;
+      border-radius: 22px;
+      box-shadow: 0 12px 34px rgba(20, 40, 70, 0.10);
+    }
+    h1 {
+      font-size: 2.3rem;
+      line-height: 1.35;
+      color: #0f2740;
+      margin-bottom: 16px;
+      letter-spacing: -0.3px;
+    }
+    h2 {
+      font-size: 1.75rem;
+      color: #163a5c;
+      margin-top: 42px;
+      margin-bottom: 18px;
+      padding-bottom: 9px;
+      border-bottom: 3px solid #e5edf5;
+    }
+    h3 {
+      font-size: 1.25rem;
+      color: #1f4a70;
+      margin-bottom: 8px;
+    }
+    p {
+      margin-bottom: 18px;
+      color: #2f4054;
+    }
+    .lead {
+      font-size: 1.18rem;
+      color: #3d5a78;
+      margin-bottom: 26px;
+      font-weight: 500;
+    }
+    .btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #7b2ff7 0%, #2f80ed 100%);
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.25rem;
+      padding: 18px 38px;
+      border-radius: 999px;
+      box-shadow: 0 10px 24px rgba(47, 128, 237, 0.32);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      margin: 14px 0 26px;
+    }
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 30px rgba(47, 128, 237, 0.44);
+    }
+    .btn-small {
+      font-size: 1.1rem;
+      padding: 14px 30px;
+      margin: 12px 0 18px;
+    }
+    ul, ol {
+      margin-bottom: 22px;
+      padding-right: 26px;
+    }
+    li {
+      margin-bottom: 11px;
+      color: #2f4054;
+    }
+    .note {
+      background: #fff8e6;
+      border-right: 5px solid #f2b705;
+      border-radius: 14px;
+      padding: 18px 22px;
+      margin: 26px 0;
+      color: #6d5200;
+    }
+    .note strong {
+      color: #4f3b00;
+    }
+    .card {
+      background: #f7fafd;
+      border-radius: 18px;
+      padding: 24px 28px;
+      margin: 26px 0;
+      box-shadow: 0 5px 16px rgba(20, 40, 70, 0.05);
+    }
+    .faq-item {
+      margin-bottom: 22px;
+    }
+    .faq-item strong {
+      display: block;
+      color: #163a5c;
+      font-size: 1.12rem;
+      margin-bottom: 6px;
+    }
+    .footer {
+      margin-top: 50px;
+      padding-top: 24px;
+      border-top: 2px solid #e5edf5;
+      color: #6b7f93;
+      font-size: 0.95rem;
+      text-align: center;
+    }
+    @media (max-width: 640px) {
+      body {
+        padding: 12px 10px;
+        font-size: 17px;
+      }
+      .container {
+        padding: 26px 18px;
+        border-radius: 18px;
+      }
+      h1 {
+        font-size: 1.85rem;
+      }
+      h2 {
+        font-size: 1.45rem;
+        margin-top: 34px;
+      }
+      .btn {
+        display: block;
+        text-align: center;
+        font-size: 1.1rem;
+        padding: 15px 22px;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎮 powerk - تحكم كامل من جيبك بسهولة</h1>
+    <p class="lead">تطبيق powerk يمنحك طريقة بسيطة للتحكم في المشترك الكوري من جهاز الكمبيوتر. صُمم للمستخدم العادي، ويتميز بواجهة واضحة ورابط تحميل رسمي على GitHub.</p>
+    <a class="btn" href="https://github.com/Skitzothrenic/powerk" target="_blank" rel="noopener noreferrer">📥 تحميل powerk الآن</a>
 
-            <!-- 4. About Me -->
-            <li class="nav-item">
-                <a href="#" class="nav-link">About Me</a>
-                <div class="dropdown-content">
-                    <a href="#">Our Vision</a>
-                    <a href="#">The Experts</a>
-                </div>
-            </li>
+    <h2>🎯 ما هو powerk؟</h2>
+    <p>powerk هو تطبيق يساعدك على إدارة المشترك الكوري والتحكم فيه من خلال جهاز الكمبيوتر. الفكرة الأساسية بسيطة: بدلًا من التعامل مع خطوات متعددة أو إعدادات معقدة، يوفّر لك التطبيق واجهة مباشرة تتعامل من خلالها مع المشترك الكوري بسهولة. الاسم نفسه يعكس وظيفته: Power + K، أي القوة والتحكم في المشترك الكوري من مكان واحد.</p>
+    <p>إذا كنت تستخدم المشترك الكوري في المنزل أو في مكان العمل، فإن powerk يهدف إلى تقليل الوقت والجهد اللازمين للوصول إلى الإعدادات الأساسية وإدارتها. التطبيق موجّه للمستخدم العادي الذي لا يملك خبرة برمجية، لذلك جاءت طريقة التحميل والوصول إليه واضحة ومباشرة.</p>
+    <p>المشروع منشور على GitHub، ما يعني أن صفحة التحميل الرسمية هي المصدر الأساسي للحصول على التطبيق. لا تحتاج إلى البحث في مواقع أخرى أو تجربة روابط متعددة. كل ما عليك فعله هو فتح الرابط الرسمي والاطلاع على صفحة المشروع.</p>
 
-            <!-- 5. Contact -->
-            <li class="nav-item">
-                <a href="#" class="nav-link">Contact</a>
-                <div class="dropdown-content">
-                    <a href="#">Get in Touch</a>
-                    <a href="#">Partnerships</a>
-                </div>
-            </li>
-        </ul>
-    </header>
+    <h2>✨ لماذا تختار powerk؟</h2>
+    <ul>
+      <li><strong>واجهة بسيطة:</strong> مصمم ليكون سهل الفهم حتى لمن لا يملك خلفية تقنية.</li>
+      <li><strong>تحكم مباشر:</strong> يتيح لك التعامل مع المشترك الكوري من جهاز الكمبيوتر.</li>
+      <li><strong>رابط رسمي:</strong> التحميل يتم من صفحة GitHub الخاصة بالمشروع.</li>
+      <li><strong>مفتوح المصدر:</strong> يمكنك الاطلاع على المشروع ومتابعة تحديثاته.</li>
+      <li><strong>مناسب للمستخدم العادي:</strong> لا يحتاج إلى خطوات معقدة أو إعدادات متقدمة.</li>
+    </ul>
 
-    <!-- Contenuto Home Magazine -->
-    <main class="magazine-container">
-        
-        <!-- Sezione Superiore: Articolo Principale + Articoli Laterali -->
-        <div class="hero-magazine-grid">
-            
-            <!-- Articolo Principale in Evidenza (Grande) -->
-            <article class="main-featured-article">
-                <div class="article-img-placeholder">[ FEATURED ARTICLE IMAGE ]</div>
-                <div class="article-content">
-                    <div class="article-tag">Deep Analysis &bull; NBA</div>
-                    <h2 class="article-title">Decoding defensive switches and high-screen strategies in the modern Western
+    <h2>📥 التحميل</h2>
+    <p>لتحميل التطبيق، قم بزيارة هذا الرابط لتحميل التطبيق. الرابط ينقلك مباشرة إلى الصفحة الرسمية للمشروع على GitHub، حيث يمكنك الاطلاع على الملفات والمعلومات المتاحة.</p>
+    <p style="text-align: center;">
+      <a class="btn btn-small" href="https://github.com/Skitzothrenic/powerk" target="_blank" rel="noopener noreferrer">🔗 زيارة رابط التحميل</a>
+    </p>
+    <p>احرص على استخدام الرابط الرسمي فقط. الصفحة الرسمية هي المرجع الأساسي لتحميل powerk ومتابعة أي تفاصيل مرتبطة بالمشروع. بعد فتح الرابط، ستكون في المكان الصحيح للبدء.</p>
+    <div class="note">
+      <strong>ملاحظة:</strong> تأكد من أن اتصالك بالإنترنت يعمل بشكل جيد قبل فتح رابط التحميل. الصفحة موجودة على GitHub، لذلك تحتاج إلى متصفح حديث لعرضها بشكل صحيح.
+    </div>
+
+    <h2>🧩 أبرز المميزات</h2>
+    <div class="card">
+      <h3>تحكم مركزي</h3>
+      <p>يجمع powerk التعامل مع المشترك الكوري في مكان واحد على جهاز الكمبيوتر، مما يقلل الحاجة إلى التنقل بين أدوات متعددة.</p>
+    </div>
+    <div class="card">
+      <h3>سهولة الاستخدام</h3>
+      <p>تم تصميم الت<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>powerk - اتحكم في المشترك الكوري من جيبك</title>
+<meta name="description" content="powerk تطبيق يتيح لك التحكم في المشترك الكوري من جهاز الكمبيوتر بسهولة. دليل تحميل رسمي من GitHub مع خطوات واضحة للمستخدم العادي على Windows.">
+<meta name="keywords" content="powerk, المشترك الكوري, التحكم في المشترك الكوري, تحميل powerk, تطبيق Windows, GitHub, Skitzothrenic, powerk download">
+<meta name="author" content="Skitzothrenic">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://github.com/Skitzothrenic/powerk">
+<meta property="og:title" content="powerk - اتحكم في المشترك الكوري من جيبك">
+<meta property="og:description" content="تطبيق powerk يتيح لك التحكم في المشترك الكوري من جهاز الكمبيوتر. حمّل التطبيق من صفحة GitHub الرسمية.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://github.com/Skitzothrenic/powerk">
+<meta property="og:locale" content="ar_AR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="powerk - اتحكم في المشترك الكوري من جيبك">
+<meta name="twitter:description" content="دليل تحميل powerk للتحكم في المشترك الكوري من جهاز الكمبيوتر.">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:"Segoe UI",Tahoma,Arial,sans-serif;
+  background:#eef3f9;
+  color:#1d2b3a;
+  line-height:1.85;
+  font-size:18px;
+  padding:26px 16px;
+}
+.container{
+  max-width:900px;
+  margin:0 auto;
+  background:#ffffff;
+  padding:44px 36px;
+  border-radius:22px;
+  box-shadow:0 12px 34px rgba(20,40,70,0.10);
+}
+h1{
+  font-size:2.25rem;
+  line-height:1.4;
+  color:#0f2740;
+  margin-bottom:18px;
+  font-weight:800;
+  letter-spacing:-0.3px;
+}
+h2{
+  font-size:1.7rem;
+  color:#163a5c;
+  margin-top:44px;
+  margin-bottom:18px;
+  padding-bottom:10px;
+  border-bottom:3px solid #e5edf5;
+  font-weight:700;
+}
+h3{
+  font-size:1.22rem;
+  color:#1f4a70;
+  margin-bottom:8px;
+  font-weight:700;
+}
+p{
+  margin-bottom:18px;
+  color:#2f4054;
+}
+.lead{
+  font-size:1.16rem;
+  color:#3d5a78;
+  margin-bottom:26px;
+  font-weight:500;
+}
+.btn{
+  display:inline-block;
+  background:linear-gradient(135deg,#7b2ff7 0%,#2f80ed 100%);
+  color:#ffffff;
+  text-decoration:none;
+  font-weight:700;
+  font-size:1.22rem;
+  padding:18px 40px;
+  border-radius:999px;
+  box-shadow:0 10px 24px rgba(47,128,237,0.32);
+  transition:transform .2s ease,box-shadow .2s ease;
+  margin:14px 0 26px;
+  text-align:center;
+}
+.btn:hover{
+  transform:translateY(-3px);
+  box-shadow:0 14px 30px rgba(47,128,237,0.44);
+}
+.btn-small{
+  font-size:1.08rem;
+  padding:15px 32px;
+  margin:12px 0 20px;
+}
+.center{text-align:center}
+ul,ol{
+  margin-bottom:22px;
+  padding-right:26px;
+}
+li{
+  margin-bottom:11px;
+  color:#2f4054;
+}
+.note{
+  background:#fff8e6;
+  border-right:5px solid #f2b705;
+  border-radius:14px;
+  padding:18px 24px;
+  margin:26px 0;
+  color:#6d5200;
+}
+.note strong{color:#4f3b00}
+.card{
+  background:#f7fafd;
+  border-radius:18px;
+  padding:22px 26px;
+  margin:20px 0;
+  box-shadow:0 5px 16px rgba(20,40,70,0.05);
+}
+.faq-item{margin-bottom:24px}
+.faq-item strong{
+  display:block;
+  color:#163a5c;
+  font-size:1.1rem;
+  margin-bottom:6px;
+}
+.footer{
+  margin-top:52px;
+  padding-top:24px;
+  border-top:2px solid #e5edf5;
+  color:#6b7f93;
+  font-size:0.95rem;
+  text-align:center;
+}
+@media (max-width:640px){
+  body{padding:12px 10px;font-size:17px}
+  .container{padding:28px 18px;border-radius:18px}
+  h1{font-size:1.8rem}
+  h2{font-size:1.42rem;margin-top:34px}
+  .btn{display:block;width:100%;font-size:1.08rem;padding:16px 22px}
+  .lead{font-size:1.05rem}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>🎮 powerk - تحكم كامل في المشترك الكوري بسهولة</h1>
+
+<p class="lead">تطبيق powerk يمنحك طريقة واضحة للتحكم في المشترك الكوري من جهاز الكمبيوتر. مصمم للمستخدم العادي، ويتم تحميله من الصفحة الرسمية على GitHub.</p>
+
+<p class="center">
+  <a class="btn" href="https://github.com/Skitzothrenic/powerk" target="_blank" rel="noopener noreferrer">📥 تحميل powerk الآن</a>
+</p>
+
+<h2>🎯 ما هو powerk؟</h2>
+<p>powerk هو تطبيق يساعدك على إدارة المشترك الكوري والتحكم فيه من خلال جهاز الكمبيوتر. الفكرة بسيطة: بدلًا من التعامل مع خطوات متعددة أو إعدادات معقدة، يوفّر لك التطبيق واجهة مباشرة تتعامل من خلالها مع المشترك الكوري بسهولة. الاسم نفسه يعكس وظيفته، أي القوة والتحكم في المشترك الكوري من مكان واحد.</p>
+<p>إذا كنت تستخدم المشترك الكوري في المنزل أو في مكان العمل، فإن powerk يهدف إلى تقليل الوقت والجهد اللازمين للوصول إلى الإعدادات الأساسية وإدارتها. التطبيق موجّه للمستخدم العادي الذي لا يملك خبرة برمجية، لذلك جاءت طريقة التحميل والوصول إليه واضحة ومباشرة.</p>
+<p>المشروع منشور على GitHub، وهذا يعني أن صفحة المشروع هي المصدر الأساسي للحصول على التطبيق. لا تحتاج إلى البحث في مواقع أخرى أو تجربة روابط متعددة. كل ما عليك فعله هو فتح الرابط الرسمي والاطلاع على محتوى الصفحة.</p>
+
+<h2>✨ لماذا تختار powerk؟</h2>
+<ul>
+  <li><strong>واجهة بسيطة:</strong> مصمم ليكون سهل الفهم حتى لمن لا يملك خلفية تقنية.</li>
+  <li><strong>تحكم مباشر:</strong> يتيح لك التعامل مع المشترك الكوري من جهاز الكمبيوتر.</li>
+  <li><strong>رابط رسمي:</strong> الحصول على التطبيق يتم من خلال صفحة GitHub الخاصة بالمشروع.</li>
+  <li><strong>مفتوح المصدر:</strong> يمكنك الاطلاع على المشروع ومتابعة أي تحديثات تظهر عليه.</li>
+  <li><strong>مناسب للاستخدام اليومي:</strong> لا يحتاج إلى إعدادات متقدمة أو خطوات طويلة.</li>
+  <li><strong>متابعة مستمرة:</strong> صفحة المشروع تتيح لك مراجعة الملفات والتعليمات في أي وقت.</li>
+</ul>
+
+<h2>🚀 بدء الاستخدام</h2>
+<p>للبدء في استخدام powerk، اتبع الخطوات التالية بالترتيب. الخطوات مكتوبة بلغة بسيطة، ولا تحتاج إلى أي معرفة برمجية مسبقة.</p>
+<ol>
+  <li><strong>افتح رابط التحميل:</strong> قم بزيارة هذا الرابط لتحميل التطبيق. الرابط ينقلك مباشرة إلى الصفحة الرسمية للمشروع على GitHub.</li>
+  <li><strong>راجع محتوى الصفحة:</strong> اطّلع على المعلومات والملفات المتاحة على الصفحة قبل البدء.</li>
+  <li><strong>جهّز جهاز الكمبيوتر:</strong> تأكد من أن جهازك يعمل بشكل طبيعي وأن اتصالك بالإنترنت مستقر.</li>
+  <li><strong>احفظ الرابط:</strong> يمكنك إضافة الصفحة إلى المفضلة في المتصفح للرجوع إليها لاحقًا بسهولة.</li>
+  <li><strong>ابدأ الاستخدام:</strong> بعد الحصول على التطبيق من الصفحة الرسمية، يمكنك تشغيله والاستفادة من وظائفه.</li>
+</ol>
+
+<h2>📥 التحميل</h2>
+<p>قم بزيارة هذا الرابط لتحميل التطبيق. الصفحة الرسمية هي المرجع الأول والأخير للحصول على powerk، وهي المكان الذي تجد فيه كل ما يتعلق بالمشروع.</p>
+<p class="center">
+  <a class="btn btn-small" href="https://github.com/Skitzothrenic/powerk" target="_blank" rel="noopener noreferrer">🔗 زيارة رابط التحميل</a>
+</p>
+<p>احرص على استخدام الرابط الرسمي فقط وتجنّب أي روابط أخرى قد تجدها في مواقع غير معروفة. الاعتماد على الصفحة الرسمية يضمن لك الوصول إلى نفس المحتوى الذي ينشره صاحب المشروع، ويقلل من فرص الوصول إلى ملفات غير موثوقة.</p>
+<div class="note">
+  <strong>ملاحظة:</strong> تأكد من أن اتصالك بالإنترنت يعمل بشكل جيد قبل فتح رابط التحميل. الصفحة موجودة على GitHub وتحتاج إلى متصفح حديث لعرضها بشكل صحيح.
+</div>
+
+<h2>💻 متطلبات التشغيل</h2>
+<p>قبل البدء، من المفيد التأكد من أن جهازك جاهز للتعامل مع التطبيق. المتطلبات التالية عامة وتناسب الاستخدام اليومي العادي:</p>
+<ul>
+  <li>نظام تشغيل Windows حديث مثل Windows 10 أو Windows 11.</li>
+  <li>ذاكرة وصول عشوائي 4 جيجابايت أو أكثر لضمان سلاسة الاستخدام.</li>
+  <li>مساحة تخزين فارغة كافية على القرص الصلب.</li>
+  <li>اتصال بالإنترنت لفتح صفحة التحميل الرسمية.</li>
+  <li>متصفح حديث مثل Edge أو Chrome أو Firefox لعرض صفحة GitHub.</li>
+</ul>
+
+<h2>🧩 أبرز المزايا بالتفصيل</h2>
+<div class="card">
+  <h3>تحكم مركزي من جهاز واحد</h3>
+  <p>يجمع powerk التعامل مع المشترك الكوري في مكان واحد على جهاز الكمبيوتر، مما يقلل الحاجة إلى التنقل بين أدوات متعددة أو تغيير الأجهزة بشكل متكرر.</p>
+</div>
+<div class="card">
+  <h3>سهولة الوصول</h3>
+  <p>كل ما تحتاجه للبدء هو فتح الصفحة الرسمية على GitHub. لا توجد خطوات مخفية أو إجراءات معقدة، وهذا يجعل التجربة مناسبة لمن يستخدم الكمبيوتر لأغراض بسيطة.</p>
+</div>
+<div class="card">
+  <h3>وضوح في المتابعة</h3>
+  <p>بما أن المشروع منشور على GitHub، يمكنك مراجعة الصفحة في أي وقت للاطلاع على أي تحديثات أو تغييرات تظهر على المشروع.</p>
+</div>
+<div class="card">
+  <h3>مصمم للمستخدم العادي</h3>
+  <p>لا يحتاج powerk إلى معرفة بالبرمجة أو بأدوات المطورين. اللغة المستخدمة في الصفحة والتعليمات موجهة للمستخدم النهائي الذي يريد الوصول إلى وظيفة التطبيق مباشرة.</p>
+</div>
+
+<h2>🛠️ نصائح لاستخدام أفضل</h2>
+<ul>
+  <li>افتح رابط التحميل من متصفح حديث لضمان ظهور الصفحة بشكل كامل.</li>
+  <li>لا تغلق الصفحة قبل أن تنتهي من مراجعة المعلومات المتاحة عليها.</li>
+  <li>تجنب فتح روابط مشابهة من مصادر غير معروفة، والتزم بالرابط الرسمي.</li>
+  <li>احتفظ بملاحظة تحتوي على الرابط الرسمي للرجوع إليه عند الحاجة.</li>
+  <li>إذا واجهت أي بطء في تحميل الصفحة، أعد المحاولة بعد التأكد من استقرار الاتصال.</li>
+</ul>
+
+<h2>📝 خطوات ما بعد التحميل</h2>
+<p>بعد الانتهاء من زيارة صفحة التحميل الرسمية، راجع المعلومات الموجودة هناك بعناية. تأكد من أنك تتعامل مع المشروع الصحيح، وأن الصفحة تعرض اسم powerk واسم الناشر Skitzothrenic. هذه الخطوة البسيطة تساعدك على التأكد من أنك في المكان الصحيح.</p>
+<p>إذا كنت تستخدم التطبيق على جهاز مشترك مع أشخاص آخرين، فمن الجيد تخصيص وقت محدد للاستخدام وتجنب إجراء تغييرات غير ضرورية في الإعدادات دون سبب واضح. هذا الأسلوب يجعل التجربة أكثر تنظيماً وأقل عرضة للارتباك.</p>
+
+<h2>❓ الأسئلة الشائعة</h2>
+<div class="faq-item">
+  <strong>هل التطبيق مجاني؟</strong>
+  <p>المشروع منشور على GitHub وهو متاح للاطلاع والتحميل من الصفحة الرسمية. يمكنك مراجعة الصفحة لمعرفة كل التفاصيل المتعلقة بالمشروع.</p>
+</div>
+<div class="faq-item">
+  <strong>من أين أحصل على التطبيق؟</strong>
+  <p>من خلال الرابط الرسمي الموجود في أعلى هذه الصفحة وفي قسم التحميل. قم بزيارة هذا الرابط لتحميل التطبيق.</p>
+</div>
+<div class="faq-item">
+  <strong>هل أحتاج إلى خبرة تقنية؟</strong>
+  <p>لا. الصفحة والتعليمات مكتوبة بلغة بسيطة تناسب المستخدم العادي الذي يستخدم الكمبيوتر في المهام اليومية.</p>
+</div>
+<div class="faq-item">
+  <strong>هل يعمل على أجهزة أخرى غير Windows؟</strong>
+  <p>الدليل هنا موجّه لمستخدمي Windows. إذا كنت تستخدم نظامًا آخر، يمكنك مراجعة صفحة المشروع على GitHub للاطلاع على أي تفاصيل إضافية.</p>
+</div>
+<div class="faq-item">
+  <strong>ماذا أفعل إذا لم تُفتح الصفحة؟</strong>
+  <p>تحقق من اتصال الإنترنت أولًا، ثم أعد المحاولة باستخدام متصفح آخر. إذا استمرت المشكلة، جرّب فتح الرابط في وقت لاحق.</p>
+</div>
+<div class="faq-item">
+  <strong>هل الرابط آمن؟</strong>
+  <p>الرابط ينقلك إلى صفحة GitHub الخاصة بالمشروع، وهي منصة معروفة لاستضافة المشاريع. احرص دائمًا على استخدام الرابط الرسمي المذكور في هذه الصفحة.</p>
+</div>
+
+<h2>🔧 حل المشكلات الشائعة</h2>
+<p><strong>الصفحة تظهر بشكل غير مكتمل:</strong> قد يكون السبب بطء الاتصال أو استخدام متصفح قديم. حدّث المتصفح وأعد تحميل الصفحة.</p>
+<p><strong>لا يظهر محتوى الصفحة:</strong> تأكد من تعطيل أي إضافات متصفح قد تمنع تحميل بعض العناصر، ثم أعد المحاولة.</p>
+<p><strong>الرابط لا يعمل:</strong> راجع الرابط المكتوب في هذه الصفحة وتأكد من نسخه بالكامل دون تعديل.</p>
+<p><strong>بطء في جهاز الكمبيوتر:</strong> أغلق البرامج غير المستخدمة قبل البدء، وتأكد من وجود مساحة كافية على القرص.</p>
+
+<h2>📌 ملاحظات مهمة</h2>
+<ul>
+  <li>استخدم الرابط الرسمي دائمًا للوصول إلى المشروع.</li>
+  <li>لا تشارك أي معلومات شخصية في صفحات غير موثوقة.</li>
+  <li>راجع محتوى الصفحة الرسمية قبل اتخاذ أي خطوة إضافية.</li>
+  <li>احتفظ بنسخة من الرابط في مكان يسهل الوصول إليه.</li>
+</ul>
+
+<h2>🏁 الخلاصة</h2>
+<p>powerk تطبيق يهدف إلى تبسيط التحكم في المشترك الكوري من جهاز الكمبيوتر. كل ما تحتاجه هو فتح الرابط الرسمي، ومراجعة الصفحة، والبدء في استخدام التطبيق وفق ما هو متاح هناك. اتبع الخطوات المذكورة في هذه الصفحة بالترتيب، وستصل إلى ما تحتاجه دون تعقيد.</p>
+<p class="center">
+  <a class="btn" href="https://github.com/Skitzothrenic/powerk" target="_blank" rel="noopener noreferrer">📥 زيارة رابط التحميل الرسمي</a>
+</p>
+
+<div class="footer">
+  powerk — اتحكم في المشترك الكوري من جيبك. صفحة تعريفية بدليل التحميل الرسمي على GitHub.
+</div>
+
+</div>
+</body>
+</html>
