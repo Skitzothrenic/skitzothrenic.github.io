@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Eurostep | Basketball Analysis</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Font ad altissima qualità e leggibilità -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Plus Jakarta+Sans', sans-serif;
         }
 
         body {
@@ -34,28 +35,23 @@
             pointer-events: none;
         }
 
+        /* Header con Menu a Sinistra e Logo/Titolo a Destra */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 25px 50px;
+            padding: 20px 40px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            background: rgba(3, 5, 8, 0.7);
+            background: rgba(3, 5, 8, 0.85);
             backdrop-filter: blur(15px);
             position: sticky;
             top: 0;
             z-index: 1000;
         }
 
-        .logo-area {
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 900;
-            font-size: 1.4rem;
-            letter-spacing: 3px;
-            background: linear-gradient(135deg, #ffffff 30%, #6b7280 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
+        /* Menu a tendina a sinistra */
+        .menu-container {
+            position: relative;
         }
 
         .menu-toggle {
@@ -63,61 +59,130 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
+            padding: 5px;
         }
 
         .menu-toggle span {
             display: block;
-            width: 32px;
+            width: 28px;
             height: 2px;
             background-color: #ffffff;
-            box-shadow: 0 0 10px rgba(255,255,255,0.8);
+            box-shadow: 0 0 8px rgba(255,255,255,0.6);
             transition: 0.3s;
         }
 
+        /* Dropdown Menu a scomparsa */
+        .dropdown-menu {
+            position: absolute;
+            top: 45px;
+            left: 0;
+            background: rgba(11, 15, 25, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            width: 240px;
+            padding: 15px 0;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            display: none;
+            z-index: 1100;
+        }
+
+        .dropdown-menu.active {
+            display: block;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 10px 20px;
+            color: #d1d5db;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .dropdown-menu a:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            padding-left: 25px;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 8px 0;
+        }
+
+        /* Logo e Testo a Destra */
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-logo {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: 1.5px;
+            background: linear-gradient(135deg, #ffffff 30%, #9ca3af 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+
+        /* Sezione Hero */
         .hero {
             text-align: center;
-            padding: 60px 20px 40px 20px;
-            max-width: 1100px;
+            padding: 50px 20px 30px 20px;
+            max-width: 1000px;
             margin: 0 auto;
             z-index: 1;
         }
 
         .hero h1 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 3rem;
+            font-size: 2.8rem;
             font-weight: 900;
-            margin-bottom: 15px;
-            letter-spacing: 2px;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
             color: #ffffff;
-            text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.25);
             text-transform: uppercase;
         }
 
         .hero p {
             color: #9ca3af;
-            font-size: 1.15rem;
-            margin-bottom: 40px;
-            font-weight: 300;
+            font-size: 1.05rem;
+            font-weight: 400;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
-        /* Contenitore Speculare Organico (NBA vs Euroleague) */
+        /* Ecosystem Grid (NBA vs Euroleague) Arricchita */
         .ecosystem-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto 60px auto;
-            padding: 0 20px;
+            max-width: 1300px;
+            margin: 0 auto 50px auto;
+            padding: 0 30px;
             z-index: 1;
         }
 
         .hub-column {
-            background: rgba(15, 23, 42, 0.4);
+            background: rgba(11, 15, 25, 0.65);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 16px;
-            padding: 30px;
+            padding: 25px;
             backdrop-filter: blur(12px);
-            text-align: left;
             transition: all 0.3s ease;
         }
 
@@ -128,7 +193,7 @@
 
         .hub-title {
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             color: #ffffff;
             margin-bottom: 20px;
             padding-bottom: 10px;
@@ -136,40 +201,134 @@
             letter-spacing: 1px;
         }
 
-        /* Anteprime interne (Articoli, Scores, Minigames) */
-        .preview-box {
+        .content-block {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 15px 20px;
+            padding: 15px;
             border-radius: 10px;
             margin-bottom: 15px;
-            transition: 0.2s;
         }
 
-        .preview-box:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .preview-tag {
+        .block-title {
             font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 1.5px;
             color: #9ca3af;
-            margin-bottom: 5px;
-            font-weight: 600;
+            margin-bottom: 10px;
+            font-weight: 700;
         }
 
-        .preview-title {
-            font-size: 1rem;
+        /* Articolo in evidenza */
+        .article-link {
+            font-size: 0.95rem;
             color: #ffffff;
             font-weight: 600;
             text-decoration: none;
             display: block;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .article-link:hover {
+            color: #60a5fa;
+        }
+        .article-snippet {
+            font-size: 0.85rem;
+            color: #9ca3af;
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+        .read-more-btn {
+            display: inline-block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .read-more-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Lista Ultime 5 Partite (Scores) */
+        .scores-list {
+            list-style: none;
+        }
+        .scores-list li {
+            font-size: 0.85rem;
+            color: #d1d5db;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            display: flex;
+            justify-content: space-between;
+        }
+        .scores-list li:last-child {
+            border-bottom: none;
+        }
+
+        /* Leaders (Top 3 Scorers) */
+        .leaders-list {
+            list-style: none;
+        }
+        .leaders-list li {
+            font-size: 0.85rem;
+            color: #d1d5db;
+            padding: 6px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+        .leader-pts {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            color: #60a5fa;
+            font-size: 0.8rem;
+        }
+
+        /* Link See More */
+        .see-more-link {
+            display: block;
+            text-align: right;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #9ca3af;
+            text-decoration: none;
+            margin-top: 8px;
+            transition: 0.2s;
+        }
+        .see-more-link:hover {
+            color: #ffffff;
+        }
+
+        /* Minigames block */
+        .minigames-links {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .minigames-links a {
+            font-size: 0.9rem;
+            color: #e5e7eb;
+            text-decoration: none;
+            background: rgba(255,255,255,0.03);
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .minigames-links a:hover {
+            background: rgba(255,255,255,0.08);
+            color: #ffffff;
         }
 
         footer {
             text-align: center;
-            padding: 30px;
+            padding: 25px;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             color: #4b5563;
             font-size: 0.85rem;
@@ -182,60 +341,135 @@
 
     <div id="webgl-container"></div>
 
+    <!-- Header -->
     <header>
-        <div class="logo-area">The Eurostep &bull; Basketball Analysis</div>
-        <div class="menu-toggle" title="Menu">
-            <span></span>
-            <span></span>
-            <span></span>
+        <!-- Menu a tendina a sinistra -->
+        <div class="menu-container">
+            <div class="menu-toggle" id="menuBtn" title="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="dropdown-menu" id="dropdownMenu">
+                <a href="#">Home</a>
+                <div class="dropdown-divider"></div>
+                <a href="#">NBA Hub</a>
+                <a href="#nba-scores">NBA Scores & Stats</a>
+                <div class="dropdown-divider"></div>
+                <a href="#">Euroleague Hub</a>
+                <a href="#euro-scores">Euroleague Scores & Stats</a>
+                <div class="dropdown-divider"></div>
+                <a href="#">Minigames</a>
+                <a href="#">About Me</a>
+                <a href="#">Contact</a>
+            </div>
+        </div>
+
+        <!-- Logo e Titolo ufficiale a destra -->
+        <div class="brand-area">
+            <span class="logo-text">The Eurostep &bull; Basketball Analysis</span>
+            <img src="the eurostep no background.png" alt="The Eurostep Logo" class="brand-logo">
         </div>
     </header>
 
+    <!-- Hero Section -->
     <div class="hero">
-        <h1>The Eurostep</h1>
-        <p>The perfect hub for NBA & Euroleague professionals and fans, featuring analysis, statistics, minigames, and much more.</p>
+        <h1>The Eurostep | Basketball Analysis</h1>
+        <p>The perfect hub for professionals and fans of NBA & Euroleague, featuring analysis, statistics, minigames, and much more.</p>
     </div>
 
-    <!-- Sezione Organica Speculare: NBA vs Euroleague -->
+    <!-- Ecosystem Grid Speculare -->
     <div class="ecosystem-grid">
         
         <!-- COLONNA NBA -->
         <div class="hub-column">
-            <div class="hub-title">NBA Ecosystem</div>
+            <div class="hub-title">NBA</div>
             
-            <div class="preview-box">
-                <div class="preview-tag">Latest Deep Analysis</div>
-                <a href="#" class="preview-title">Decoding the defensive switches in the modern Western Conference finals.</a>
+            <!-- 1. Deep Article Preview -->
+            <div class="content-block">
+                <div class="block-title">Latest Deep Analysis</div>
+                <a href="#" class="article-link">Decoding defensive switches in the modern Western Conference finals.</a>
+                <p class="article-snippet">An in-depth breakdown of how elite defenses counter pick-and-roll heaviness.</p>
+                <a href="#" class="read-more-btn">Read Article &rarr;</a>
             </div>
 
-            <div class="preview-box">
-                <div class="preview-tag">Recent Score Highlight</div>
-                <span class="preview-title">BOS 118 - 112 LAL (Box Score & Stats available)</span>
+            <!-- 2. Scores (Ultime 5 partite) -->
+            <div class="content-block" id="nba-scores">
+                <div class="block-title">Scores (Last 5 Games)</div>
+                <ul class="scores-list">
+                    <li><span>BOS 118 - 112 LAL</span> <span>Yesterday</span></li>
+                    <li><span>DEN 124 - 115 GSW</span> <span>2 days ago</span></li>
+                    <li><span>MIA 102 - 99 NYK</span> <span>2 days ago</span></li>
+                    <li><span>OKC 130 - 121 DAL</span> <span>3 days ago</span></li>
+                    <li><span>MIL 111 - 108 PHX</span> <span>3 days ago</span></li>
+                </ul>
+                <a href="#" class="see-more-link">See more schedule &box; &rarr;</a>
             </div>
 
-            <div class="preview-box">
-                <div class="preview-tag">Daily Minigame</div>
-                <a href="#" class="preview-title">Play NBA Hoops Grid & Predictors &rarr;</a>
+            <!-- 3. Leaders (Top 3 Scorers) -->
+            <div class="content-block">
+                <div class="block-title">Leaders (Top Scorers PPG)</div>
+                <ul class="leaders-list">
+                    <li><span>1. L. Dončić (DAL)</span> <span class="leader-pts">33.8 PPG</span></li>
+                    <li><span>2. G. Antetokounmpo (MIL)</span> <span class="leader-pts">31.2 PPG</span></li>
+                    <li><span>3. S. Gilgeous-Alexander (OKC)</span> <span class="leader-pts">30.5 PPG</span></li>
+                </ul>
+                <a href="#" class="see-more-link">See more stats &rarr;</a>
+            </div>
+
+            <!-- 4. Minigames -->
+            <div class="content-block">
+                <div class="block-title">Minigames</div>
+                <div class="minigames-links">
+                    <a href="#"><span>NBA Hoops Grid</span> <span>&rarr;</span></a>
+                    <a href="#"><span>Game Predictors & Standings</span> <span>&rarr;</span></a>
+                </div>
             </div>
         </div>
 
         <!-- COLONNA EUROLEAGUE -->
         <div class="hub-column">
-            <div class="hub-title">Euroleague Ecosystem</div>
+            <div class="hub-title">Euroleague</div>
             
-            <div class="preview-box">
-                <div class="preview-tag">Latest Deep Analysis</div>
-                <a href="#" class="preview-title">The tactical evolution of pick-and-roll coverages in Euroleague.</a>
+            <!-- 1. Deep Article Preview -->
+            <div class="content-block">
+                <div class="block-title">Latest Deep Analysis</div>
+                <a href="#" class="article-link">The tactical evolution of drop coverages in Euroleague basketball.</a>
+                <p class="article-snippet">Analysing spacing mechanics and defensive adjustments across European powerhouses.</p>
+                <a href="#" class="read-more-btn">Read Article &rarr;</a>
             </div>
 
-            <div class="preview-box">
-                <div class="preview-tag">Recent Score Highlight</div>
-                <span class="preview-title">RMB 89 - 84 OLY (Box Score & Stats available)</span>
+            <!-- 2. Scores (Ultime 5 partite) -->
+            <div class="content-block" id="euro-scores">
+                <div class="block-title">Scores (Last 5 Games)</div>
+                <ul class="scores-list">
+                    <li><span>RMB 89 - 84 OLY</span> <span>Yesterday</span></li>
+                    <li><span>PAO 92 - 88 FEN</span> <span>2 days ago</span></li>
+                    <li><span>BAR 78 - 75 MCO</span> <span>2 days ago</span></li>
+                    <li><span>MIL 85 - 82 VIR</span> <span>3 days ago</span></li>
+                    <li><span>PAR 90 - 86 EFS</span> <span>3 days ago</span></li>
+                </ul>
+                <a href="#" class="see-more-link">See more calendar &box; &rarr;</a>
             </div>
 
-            <div class="preview-box">
-                <div class="preview-tag">Daily Minigame</div>
-                <a href="#" class="preview-title">Play Euroleague Predictor & Mini-Challenges &rarr;</a>
+            <!-- 3. Leaders (Top 3 Scorers) -->
+            <div class="content-block">
+                <div class="block-title">Leaders (Top Scorers PPG)</div>
+                <ul class="leaders-list">
+                    <li><span>1. M. James (ASM)</span> <span class="leader-pts">18.4 PPG</span></li>
+                    <li><span>2. N. Mirotić (MIL)</span> <span class="leader-pts">17.7 PPG</span></li>
+                    <li><span>3. S. Vezenkov (OLY)</span> <span class="leader-pts">17.2 PPG</span></li>
+                </ul>
+                <a href="#" class="see-more-link">See more stats &rarr;</a>
+            </div>
+
+            <!-- 4. Minigames -->
+            <div class="content-block">
+                <div class="block-title">Minigames</div>
+                <div class="minigames-links">
+                    <a href="#"><span>Euroleague Predictor</span> <span>&rarr;</span></a>
+                    <a href="#"><span>Daily European Trivia</span> <span>&rarr;</span></a>
+                </div>
             </div>
         </div>
 
@@ -245,7 +479,22 @@
         &copy; 2026 The Eurostep | Basketball Analysis. All rights reserved.
     </footer>
 
+    <!-- Script per Menu a tendina e Motore 3D -->
     <script>
+        // Logica apertura/chiusura menu a tendina
+        const menuBtn = document.getElementById('menuBtn');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+
+        menuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('active');
+        });
+
+        window.addEventListener('click', () => {
+            dropdownMenu.classList.remove('active');
+        });
+
+        // Configurazione Sfondo 3D con Three.js
         const container = document.getElementById('webgl-container');
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
