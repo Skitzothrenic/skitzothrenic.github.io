@@ -34,7 +34,6 @@
             pointer-events: none;
         }
 
-        /* Header: Menu a Sinistra, Logo e Titolo a Destra */
         header {
             display: flex;
             justify-content: space-between;
@@ -48,7 +47,7 @@
             z-index: 1000;
         }
 
-        /* Menu a tendina a Sinistra con animazione */
+        /* Menu a tendina a Sinistra (Stile Pannello Olografico) */
         .menu-container {
             position: relative;
         }
@@ -58,41 +57,43 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
-            padding: 8px;
+            padding: 10px;
             border-radius: 8px;
-            transition: background 0.3s ease;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
         }
 
         .menu-toggle:hover {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
         }
 
         .menu-toggle span {
             display: block;
-            width: 28px;
+            width: 26px;
             height: 2px;
             background-color: #ffffff;
-            box-shadow: 0 0 8px rgba(255,255,255,0.6);
             transition: all 0.3s ease;
         }
 
         .menu-toggle:hover span {
             background-color: #60a5fa;
-            width: 32px;
+            width: 30px;
         }
 
-        /* Dropdown Menu */
         .dropdown-menu {
             position: absolute;
-            top: 55px;
+            top: 60px;
             left: 0;
-            background: rgba(11, 15, 25, 0.98);
+            background: rgba(5, 8, 15, 0.98);
             border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
-            width: 240px;
-            padding: 15px 0;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            border-radius: 14px;
+            width: 280px;
+            padding: 20px 0;
+            backdrop-filter: blur(25px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.9), 0 0 20px rgba(255, 255, 255, 0.05);
             display: none;
             z-index: 1100;
         }
@@ -101,26 +102,36 @@
             display: block;
         }
 
+        .menu-category-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 1.5px;
+            color: #9ca3af;
+            padding: 10px 20px 5px 20px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
         .dropdown-menu a {
             display: block;
-            padding: 10px 20px;
+            padding: 10px 25px;
             color: #d1d5db;
             text-decoration: none;
             font-size: 0.95rem;
             font-weight: 500;
-            transition: 0.2s;
+            transition: all 0.2s ease;
         }
 
         .dropdown-menu a:hover {
             background: rgba(255, 255, 255, 0.08);
             color: #ffffff;
-            padding-left: 25px;
+            padding-left: 30px;
         }
 
         .dropdown-divider {
             height: 1px;
-            background: rgba(255, 255, 255, 0.1);
-            margin: 8px 0;
+            background: rgba(255, 255, 255, 0.08);
+            margin: 10px 0;
         }
 
         /* Logo e Testo a Destra */
@@ -147,7 +158,6 @@
             text-transform: uppercase;
         }
 
-        /* Hero Section */
         .hero {
             text-align: center;
             padding: 50px 20px 30px 20px;
@@ -176,7 +186,6 @@
             margin: 0 auto;
         }
 
-        /* Ecosystem Grid (NBA vs Euroleague) */
         .ecosystem-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -193,12 +202,6 @@
             border-radius: 16px;
             padding: 25px;
             backdrop-filter: blur(12px);
-            transition: all 0.3s ease;
-        }
-
-        .hub-column:hover {
-            border-color: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
         }
 
         .hub-title {
@@ -235,6 +238,25 @@
             padding: 5px 0;
         }
 
+        /* Tabellini con Top Scorer anziché la data */
+        .scores-list {
+            list-style: none;
+        }
+        .scores-list li {
+            font-size: 0.85rem;
+            color: #d1d5db;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .top-scorer {
+            font-size: 0.75rem;
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
         .see-more-link {
             display: block;
             text-align: right;
@@ -264,7 +286,6 @@
 
     <div id="webgl-container"></div>
 
-    <!-- Header -->
     <header>
         <!-- Menu a tendina a Sinistra -->
         <div class="menu-container">
@@ -276,10 +297,27 @@
             <div class="dropdown-menu" id="dropdownMenu">
                 <a href="#">Home</a>
                 <div class="dropdown-divider"></div>
-                <a href="#">NBA</a>
-                <a href="#">Euroleague</a>
+                
+                <div class="menu-category-title">NBA</div>
+                <a href="#">Articles</a>
+                <a href="#">Scores & Box Scores</a>
+                <a href="#">Stats & Leaders</a>
+                <a href="#">Rosters</a>
+
                 <div class="dropdown-divider"></div>
+                
+                <div class="menu-category-title">Euroleague</div>
+                <a href="#">Articles</a>
+                <a href="#">Scores & Box Scores</a>
+                <a href="#">Stats & Leaders</a>
+                <a href="#">Rosters</a>
+
+                <div class="dropdown-divider"></div>
+                
                 <a href="#">Minigames</a>
+                
+                <div class="dropdown-divider"></div>
+                
                 <a href="#">About Me</a>
                 <a href="#">Contact</a>
             </div>
@@ -292,43 +330,41 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
     <div class="hero">
         <h1>The Eurostep | Basketball Analysis</h1>
         <p>The perfect hub for professionals and fans of NBA & Euroleague, featuring analysis, statistics, minigames, and much more.</p>
     </div>
 
-    <!-- Ecosystem Grid Speculare -->
     <div class="ecosystem-grid">
         
         <!-- COLONNA NBA -->
         <div class="hub-column">
             <div class="hub-title">NBA</div>
             
-            <!-- Latest Analysis -->
             <div class="content-block">
                 <div class="block-title">Latest Deep Analysis</div>
-                <div class="placeholder-text">No articles published yet. Stay tuned.</div>
+                <div class="placeholder-text">No articles published yet.</div>
             </div>
 
-            <!-- Scores -->
             <div class="content-block">
                 <div class="block-title">Scores</div>
-                <div class="placeholder-text">Live scores and box scores coming soon.</div>
+                <ul class="scores-list">
+                    <li><span>LAL 112 - 105 BOS</span> <span class="top-scorer">Top: L. James (28 pts)</span></li>
+                    <li><span>GSW 120 - 115 PHX</span> <span class="top-scorer">Top: S. Curry (34 pts)</span></li>
+                    <li><span>DEN 118 - 110 MIL</span> <span class="top-scorer">Top: N. Jokić (30 pts)</span></li>
+                </ul>
                 <a href="#" class="see-more-link">See more &rarr;</a>
             </div>
 
-            <!-- Leaders -->
             <div class="content-block">
                 <div class="block-title">Leaders</div>
-                <div class="placeholder-text">Player statistics and leaderboards pending.</div>
+                <div class="placeholder-text">Leaderboard pending.</div>
                 <a href="#" class="see-more-link">See more &rarr;</a>
             </div>
 
-            <!-- Minigames -->
             <div class="content-block">
                 <div class="block-title">Minigames</div>
-                <div class="placeholder-text">Minigames setup in progress.</div>
+                <div class="placeholder-text">Setup in progress.</div>
             </div>
         </div>
 
@@ -336,30 +372,30 @@
         <div class="hub-column">
             <div class="hub-title">Euroleague</div>
             
-            <!-- Latest Analysis -->
             <div class="content-block">
                 <div class="block-title">Latest Deep Analysis</div>
-                <div class="placeholder-text">No articles published yet. Stay tuned.</div>
+                <div class="placeholder-text">No articles published yet.</div>
             </div>
 
-            <!-- Scores -->
             <div class="content-block">
                 <div class="block-title">Scores</div>
-                <div class="placeholder-text">Live scores and box scores coming soon.</div>
+                <ul class="scores-list">
+                    <li><span>RMB 89 - 84 OLY</span> <span class="top-scorer">Top: W. Tavares (22 pts)</span></li>
+                    <li><span>BAR 92 - 88 FEN</span> <span class="top-scorer">Top: K. Punter (25 pts)</span></li>
+                    <li><span>PAO 85 - 80 ASM</span> <span class="top-scorer">Top: K. Nunn (24 pts)</span></li>
+                </ul>
                 <a href="#" class="see-more-link">See more &rarr;</a>
             </div>
 
-            <!-- Leaders -->
             <div class="content-block">
                 <div class="block-title">Leaders</div>
-                <div class="placeholder-text">Player statistics and leaderboards pending.</div>
+                <div class="placeholder-text">Leaderboard pending.</div>
                 <a href="#" class="see-more-link">See more &rarr;</a>
             </div>
 
-            <!-- Minigames -->
             <div class="content-block">
                 <div class="block-title">Minigames</div>
-                <div class="placeholder-text">Minigames setup in progress.</div>
+                <div class="placeholder-text">Setup in progress.</div>
             </div>
         </div>
 
@@ -369,7 +405,6 @@
         &copy; 2026 The Eurostep | Basketball Analysis. All rights reserved.
     </footer>
 
-    <!-- Script JavaScript -->
     <script>
         const menuBtn = document.getElementById('menuBtn');
         const dropdownMenu = document.getElementById('dropdownMenu');
@@ -383,7 +418,6 @@
             dropdownMenu.classList.remove('active');
         });
 
-        // Motore 3D Particelle
         const container = document.getElementById('webgl-container');
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
