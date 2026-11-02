@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Eurostep | Basketball Analysis</title>
-    <!-- Importiamo Google Fonts per un look super moderno -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <!-- Libreria Three.js per l'effetto 3D interattivo -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         * {
@@ -26,7 +24,6 @@
             justify-content: space-between;
         }
 
-        /* Canvas 3D sullo sfondo che reagisce al mouse */
         #webgl-container {
             position: fixed;
             top: 0;
@@ -37,7 +34,6 @@
             pointer-events: none;
         }
 
-        /* Header Futuristico */
         header {
             display: flex;
             justify-content: space-between;
@@ -60,7 +56,6 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-transform: uppercase;
-            text-shadow: 0 0 30px rgba(255,255,255,0.2);
         }
 
         .menu-toggle {
@@ -79,91 +74,99 @@
             transition: 0.3s;
         }
 
-        /* Contenuto Principale con effetto Olografico */
         .hero {
             text-align: center;
-            padding: 100px 20px;
-            max-width: 1000px;
+            padding: 60px 20px 40px 20px;
+            max-width: 1100px;
             margin: 0 auto;
             z-index: 1;
         }
 
         .hero h1 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 3.5rem;
+            font-size: 3rem;
             font-weight: 900;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             letter-spacing: 2px;
             color: #ffffff;
-            text-shadow: 0 0 40px rgba(255, 255, 255, 0.3);
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
             text-transform: uppercase;
         }
 
         .hero p {
             color: #9ca3af;
-            font-size: 1.25rem;
-            margin-bottom: 50px;
+            font-size: 1.15rem;
+            margin-bottom: 40px;
             font-weight: 300;
-            letter-spacing: 0.5px;
         }
 
-        /* Griglia Sezioni 3D Card */
-        .sections-grid {
+        /* Contenitore Speculare Organico (NBA vs Euroleague) */
+        .ecosystem-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 30px;
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto 60px auto;
+            padding: 0 20px;
+            z-index: 1;
         }
 
-        .card-section {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 40px 30px;
+        .hub-column {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 16px;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            cursor: pointer;
-            text-decoration: none;
-            color: inherit;
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
+            padding: 30px;
+            backdrop-filter: blur(12px);
+            text-align: left;
+            transition: all 0.3s ease;
         }
 
-        .card-section::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.08) 0%, transparent 60%);
-            opacity: 0;
-            transition: opacity 0.3s;
+        .hub-column:hover {
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
         }
 
-        .card-section:hover::before {
-            opacity: 1;
-        }
-
-        .card-section:hover {
-            border-color: rgba(255, 255, 255, 0.4);
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 255, 255, 0.1);
-        }
-
-        .card-section h3 {
+        .hub-title {
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.8rem;
-            margin-bottom: 15px;
+            font-size: 1.6rem;
             color: #ffffff;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             letter-spacing: 1px;
         }
 
-        .card-section p {
-            font-size: 1rem;
-            margin-bottom: 0;
-            color: #9ca3af;
+        /* Anteprime interne (Articoli, Scores, Minigames) */
+        .preview-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            transition: 0.2s;
         }
 
-        /* Footer */
+        .preview-box:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .preview-tag {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #9ca3af;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .preview-title {
+            font-size: 1rem;
+            color: #ffffff;
+            font-weight: 600;
+            text-decoration: none;
+            display: block;
+        }
+
         footer {
             text-align: center;
             padding: 30px;
@@ -177,10 +180,8 @@
 </head>
 <body>
 
-    <!-- Sfondo Interattivo 3D -->
     <div id="webgl-container"></div>
 
-    <!-- Header -->
     <header>
         <div class="logo-area">The Eurostep &bull; Analysis</div>
         <div class="menu-toggle" title="Menu">
@@ -190,31 +191,61 @@
         </div>
     </header>
 
-    <!-- Main Hero -->
     <div class="hero">
-        <h1>Next-Gen Basketball Hub</h1>
-        <p>The ultimate split ecosystem for true connoisseurs: deep analytics, live stats, minigames, and predictors.</p>
-        
-        <div class="sections-grid">
-            <a href="#" class="card-section">
-                <h3>NBA Hub</h3>
-                <p>Articles, Rosters, Advanced Stats & Predictors dedicated to the American league.</p>
-            </a>
-            <a href="#" class="card-section">
-                <h3>Euroleague Hub</h3>
-                <p>Deep analysis, Calendars, Box Scores & European basketball statistics.</p>
-            </a>
-        </div>
+        <h1>The Eurostep</h1>
+        <p>The perfect hub for NBA & Euroleague professionals and fans, featuring analysis, statistics, minigames, and much more.</p>
     </div>
 
-    <!-- Footer -->
+    <!-- Sezione Organica Speculare: NBA vs Euroleague -->
+    <div class="ecosystem-grid">
+        
+        <!-- COLONNA NBA -->
+        <div class="hub-column">
+            <div class="hub-title">NBA Ecosystem</div>
+            
+            <div class="preview-box">
+                <div class="preview-tag">Latest Deep Analysis</div>
+                <a href="#" class="preview-title">Decoding the defensive switches in the modern Western Conference finals.</a>
+            </div>
+
+            <div class="preview-box">
+                <div class="preview-tag">Recent Score Highlight</div>
+                <span class="preview-title">BOS 118 - 112 LAL (Box Score & Stats available)</span>
+            </div>
+
+            <div class="preview-box">
+                <div class="preview-tag">Daily Minigame</div>
+                <a href="#" class="preview-title">Play NBA Hoops Grid & Predictors &rarr;</a>
+            </div>
+        </div>
+
+        <!-- COLONNA EUROLEAGUE -->
+        <div class="hub-column">
+            <div class="hub-title">Euroleague Ecosystem</div>
+            
+            <div class="preview-box">
+                <div class="preview-tag">Latest Deep Analysis</div>
+                <a href="#" class="preview-title">The tactical evolution of pick-and-roll coverages in Euroleague.</a>
+            </div>
+
+            <div class="preview-box">
+                <div class="preview-tag">Recent Score Highlight</div>
+                <span class="preview-title">RMB 89 - 84 OLY (Box Score & Stats available)</span>
+            </div>
+
+            <div class="preview-box">
+                <div class="preview-tag">Daily Minigame</div>
+                <a href="#" class="preview-title">Play Euroleague Predictor & Mini-Challenges &rarr;</a>
+            </div>
+        </div>
+
+    </div>
+
     <footer>
         &copy; 2026 The Eurostep | Basketball Analysis. All rights reserved.
     </footer>
 
-    <!-- Script JavaScript per il motore 3D e l'interazione col mouse -->
     <script>
-        // Configurazione Sfondo 3D con Three.js (Particelle / Sfera futuristica ispirata al logo)
         const container = document.getElementById('webgl-container');
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -223,7 +254,6 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         container.appendChild(renderer.domElement);
 
-        // Creazione di un campo di particelle 3D fluttuanti
         const particlesGeometry = new THREE.BufferGeometry();
         const particlesCount = 1500;
         const posArray = new Float32Array(particlesCount * 3);
@@ -246,7 +276,6 @@
 
         camera.position.z = 3;
 
-        // Interazione col movimento del mouse
         let mouseX = 0;
         let mouseY = 0;
         let targetX = 0;
@@ -256,9 +285,6 @@
             mouseX = (event.clientX - window.innerWidth / 2) / 500;
             mouseY = (event.clientY - window.innerHeight / 2) / 500;
         });
-
-        // Animazione fluida (Render loop)
-        const clock = new THREE.Clock();
 
         function animate() {
             requestAnimationFrame(animate);
@@ -273,7 +299,6 @@
 
         animate();
 
-        // Adattamento al ridimensionamento della finestra
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
