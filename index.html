@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Eurostep | Basketball Analysis</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         * {
@@ -34,284 +34,265 @@
             pointer-events: none;
         }
 
+        /* Header con Logo a Sinistra e Navigazione Orizzontale */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 40px;
+            padding: 15px 40px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            background: rgba(3, 5, 8, 0.9);
+            background: rgba(3, 5, 8, 0.92);
             backdrop-filter: blur(15px);
             position: sticky;
             top: 0;
             z-index: 1000;
         }
 
-        /* Menu a Sinistra - Pulsante Minimal e Futuristico */
-        .menu-container {
-            position: relative;
-            z-index: 1200;
-        }
-
-        .menu-toggle {
-            cursor: pointer;
+        /* Logo a Sinistra con animazione al passaggio del mouse */
+        .brand-logo-container {
             display: flex;
-            flex-direction: column;
-            gap: 5px;
-            padding: 10px;
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 6px;
-            transition: all 0.3s ease;
-        }
-
-        .menu-toggle:hover {
-            border-color: rgba(255, 255, 255, 0.4);
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        .menu-toggle span {
-            display: block;
-            width: 24px;
-            height: 2px;
-            background-color: #ffffff;
-            transition: all 0.3s ease;
-        }
-
-        .menu-toggle:hover span {
-            background-color: #e5e7eb;
-        }
-
-        /* Pannello Laterale (Sidebar Drawer) che scorre da sinistra */
-        .sidebar-menu {
-            position: fixed;
-            top: 0;
-            left: -320px;
-            width: 300px;
-            height: 100vh;
-            background: rgba(3, 5, 8, 0.98);
-            border-right: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(25px);
-            box-shadow: 10px 0 40px rgba(0, 0, 0, 0.8);
-            transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: 1500;
-            padding: 40px 25px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .sidebar-menu.active {
-            left: 0;
-        }
-
-        .sidebar-header {
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .sidebar-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.9rem;
-            letter-spacing: 2px;
-            color: #9ca3af;
-            text-transform: uppercase;
-        }
-
-        .close-btn {
-            background: transparent;
-            border: none;
-            color: #ffffff;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-
-        .close-btn:hover {
-            color: #60a5fa;
-        }
-
-        .sidebar-links {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            overflow-y: auto;
-        }
-
-        .sidebar-links a {
-            color: #d1d5db;
             text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 500;
-            padding: 10px 15px;
-            border-radius: 8px;
-            transition: all 0.2s ease;
+            transition: transform 0.3s ease, filter 0.3s ease;
         }
 
-        .sidebar-links a:hover {
-            background: rgba(255, 255, 255, 0.05);
-            color: #ffffff;
-            padding-left: 20px;
-        }
-
-        .sidebar-category {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.7rem;
-            letter-spacing: 1.5px;
-            color: #6b7280;
-            text-transform: uppercase;
-            margin-top: 15px;
-            margin-bottom: 5px;
-            padding-left: 15px;
-        }
-
-        /* Logo e Testo a Destra */
-        .brand-area {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+        .brand-logo-container:hover {
+            transform: scale(1.04);
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.4));
         }
 
         .brand-logo {
-            height: 38px;
+            height: 48px;
             width: auto;
             object-fit: contain;
         }
 
-        .logo-text {
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 700;
-            font-size: 1.05rem;
-            letter-spacing: 1.5px;
-            background: linear-gradient(135deg, #ffffff 30%, #9ca3af 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
-        }
-
-        /* Hero Section */
-        .hero {
-            text-align: center;
-            padding: 50px 20px 30px 20px;
-            max-width: 1000px;
-            margin: 0 auto;
-            z-index: 1;
-        }
-
-        .hero h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2.8rem;
-            font-weight: 900;
-            margin-bottom: 15px;
-            letter-spacing: 1px;
-            color: #ffffff;
-            text-shadow: 0 0 30px rgba(255, 255, 255, 0.25);
-            text-transform: uppercase;
-        }
-
-        .hero p {
-            color: #9ca3af;
-            font-size: 1.05rem;
-            font-weight: 400;
-            line-height: 1.6;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        /* Ecosystem Grid (NBA vs Euroleague) */
-        .ecosystem-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+        /* Navigazione Orizzontale con Dropdown al passaggio del mouse */
+        .nav-menu {
+            display: flex;
+            align-items: center;
             gap: 30px;
+            list-style: none;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            color: #d1d5db;
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            padding: 10px 0;
+            transition: color 0.3s ease;
+            display: block;
+        }
+
+        .nav-link:hover {
+            color: #ffffff;
+        }
+
+        /* Sottotenda (Dropdown) per le macrosezioni */
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: rgba(5, 8, 15, 0.96);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            min-width: 200px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            padding: 10px 0;
+            z-index: 1100;
+        }
+
+        .nav-item:hover .dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 8px 20px;
+            color: #9ca3af;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            text-transform: none;
+            letter-spacing: normal;
+        }
+
+        .dropdown-content a:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            padding-left: 25px;
+        }
+
+        /* Main Container Magazine Style */
+        .magazine-container {
             max-width: 1300px;
-            margin: 0 auto 50px auto;
+            margin: 40px auto;
             padding: 0 30px;
             z-index: 1;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
         }
 
-        .hub-column {
-            background: rgba(11, 15, 25, 0.65);
+        /* Sezione Principale: Articolo Grande + Articoli Scorrevoli a fianco */
+        .hero-magazine-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+        }
+
+        /* Articolo Principale in Evidenza */
+        .main-featured-article {
+            background: rgba(11, 15, 25, 0.7);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 16px;
-            padding: 25px;
+            overflow: hidden;
             backdrop-filter: blur(12px);
-            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            transition: border-color 0.3s ease;
         }
 
-        .hub-column:hover {
+        .main-featured-article:hover {
             border-color: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
         }
 
-        .hub-title {
+        .article-img-placeholder {
+            width: 100%;
+            height: 320px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4b5563;
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.5rem;
-            color: #ffffff;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.85rem;
             letter-spacing: 1px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .content-block {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 15px;
+        .article-content {
+            padding: 25px;
         }
 
-        .block-title {
-            font-size: 0.75rem;
-            text-transform: uppercase;
+        .article-tag {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            color: #60a5fa;
             letter-spacing: 1.5px;
-            color: #9ca3af;
+            text-transform: uppercase;
             margin-bottom: 10px;
             font-weight: 700;
         }
 
-        .placeholder-text {
-            font-size: 0.9rem;
-            color: #6b7280;
-            font-style: italic;
-            padding: 5px 0;
-        }
-
-        /* Tabellini con Top Scorer */
-        .scores-list {
-            list-style: none;
-        }
-        .scores-list li {
-            font-size: 0.85rem;
-            color: #d1d5db;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.03);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .top-scorer {
-            font-size: 0.75rem;
-            color: #60a5fa;
-            font-weight: 600;
-        }
-
-        .see-more-link {
-            display: block;
-            text-align: right;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #9ca3af;
-            text-decoration: none;
-            margin-top: 8px;
-            transition: 0.2s;
-        }
-        .see-more-link:hover {
+        .article-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
             color: #ffffff;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .article-snippet {
+            color: #9ca3af;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        /* Colonna Articoli in Evidenza Laterali (Scorrevoli) */
+        .side-articles-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .side-article-card {
+            background: rgba(11, 15, 25, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 18px;
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .side-article-card:hover {
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .side-article-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            color: #ffffff;
+            line-height: 1.4;
+        }
+
+        /* Griglia Articoli Inferiori */
+        .secondary-articles-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .grid-article-card {
+            background: rgba(11, 15, 25, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            overflow: hidden;
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+        }
+
+        .grid-article-card:hover {
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+        }
+
+        .grid-img-placeholder {
+            width: 100%;
+            height: 160px;
+            background: rgba(255, 255, 255, 0.03);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4b5563;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .grid-content {
+            padding: 20px;
+        }
+
+        .grid-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            color: #ffffff;
+            margin-bottom: 10px;
+            line-height: 1.3;
         }
 
         footer {
@@ -322,6 +303,7 @@
             font-size: 0.85rem;
             letter-spacing: 1px;
             z-index: 1;
+            margin-top: 50px;
         }
     </style>
 </head>
@@ -329,153 +311,138 @@
 
     <div id="webgl-container"></div>
 
-    <!-- Header -->
+    <!-- Header con Logo a Sinistra e 5 Macrosezioni -->
     <header>
-        <!-- Menu a Sinistra (Sidebar Scorrevole) -->
-        <div class="menu-container">
-            <div class="menu-toggle" id="menuBtn" title="Open Menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-            
-            <div class="sidebar-menu" id="sidebarMenu">
-                <div>
-                    <div class="sidebar-header">
-                        <span class="sidebar-title">Navigation</span>
-                        <button class="close-btn" id="closeBtn">&times;</button>
-                    </div>
-                    
-                    <div class="sidebar-links">
-                        <a href="#">Home</a>
-                        
-                        <div class="sidebar-category">NBA</div>
-                        <a href="#">Articles & Analysis</a>
-                        <a href="#">Scores & Box Scores</a>
-                        <a href="#">Stats & Leaders</a>
-                        <a href="#">Rosters</a>
-
-                        <div class="sidebar-category">Euroleague</div>
-                        <a href="#">Articles & Analysis</a>
-                        <a href="#">Scores & Box Scores</a>
-                        <a href="#">Stats & Leaders</a>
-                        <a href="#">Rosters</a>
-
-                        <div class="sidebar-category">General</div>
-                        <a href="#">Minigames</a>
-                        <a href="#">About Me</a>
-                        <a href="#">Contact</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Logo e Titolo a Destra -->
-        <div class="brand-area">
-            <span class="logo-text">The Eurostep &bull; Basketball Analysis</span>
+        <!-- Logo a Sinistra con link alla Home -->
+        <a href="#" class="brand-logo-container" title="The Eurostep Home">
             <img src="the eurostep no background.png" alt="The Eurostep Logo" class="brand-logo">
-        </div>
+        </a>
+
+        <!-- Barra di Navigazione Orizzontale -->
+        <ul class="nav-menu">
+            <!-- 1. NBA -->
+            <li class="nav-item">
+                <a href="#" class="nav-link">NBA</a>
+                <div class="dropdown-content">
+                    <a href="#">Articles</a>
+                    <a href="#">Scores & Box Scores</a>
+                    <a href="#">Stats & Leaders</a>
+                    <a href="#">Rosters</a>
+                </div>
+            </li>
+
+            <!-- 2. Euroleague -->
+            <li class="nav-item">
+                <a href="#" class="nav-link">Euroleague</a>
+                <div class="dropdown-content">
+                    <a href="#">Articles</a>
+                    <a href="#">Scores & Box Scores</a>
+                    <a href="#">Stats & Leaders</a>
+                    <a href="#">Rosters</a>
+                </div>
+            </li>
+
+            <!-- 3. Minigames -->
+            <li class="nav-item">
+                <a href="#" class="nav-link">Minigames</a>
+                <div class="dropdown-content">
+                    <a href="#">NBA Hoops Grid</a>
+                    <a href="#">Euroleague Predictor</a>
+                    <a href="#">Daily Trivia</a>
+                </div>
+            </li>
+
+            <!-- 4. About Me -->
+            <li class="nav-item">
+                <a href="#" class="nav-link">About Me</a>
+                <div class="dropdown-content">
+                    <a href="#">Our Vision</a>
+                    <a href="#">The Experts</a>
+                </div>
+            </li>
+
+            <!-- 5. Contact -->
+            <li class="nav-item">
+                <a href="#" class="nav-link">Contact</a>
+                <div class="dropdown-content">
+                    <a href="#">Get in Touch</a>
+                    <a href="#">Partnerships</a>
+                </div>
+            </li>
+        </ul>
     </header>
 
-    <!-- Hero Section -->
-    <div class="hero">
-        <h1>The Eurostep | Basketball Analysis</h1>
-        <p>The perfect hub for professionals and fans of NBA & Euroleague, featuring analysis, statistics, minigames, and much more.</p>
-    </div>
-
-    <!-- Ecosystem Grid Speculare -->
-    <div class="ecosystem-grid">
+    <!-- Contenuto Home Magazine (Articoli curati con cura maniacale) -->
+    <main class="magazine-container">
         
-        <!-- COLONNA NBA -->
-        <div class="hub-column">
-            <div class="hub-title">NBA</div>
+        <!-- Sezione Superiore: Articolo Principale + Articoli Laterali -->
+        <div class="hero-magazine-grid">
             
-            <div class="content-block">
-                <div class="block-title">Latest Deep Analysis</div>
-                <div class="placeholder-text">No articles published yet.</div>
+            <!-- Articolo Principale in Evidenza (Grande) -->
+            article class="main-featured-article">
+                <div class="article-img-placeholder">[ FEATURED ARTICLE IMAGE ]</div>
+                <div class="article-content">
+                    <div class="article-tag">Deep Analysis &bull; NBA</div>
+                    <h2 class="article-title">Decoding defensive switches and high-screen strategies in the modern Western Conference finals.</h2>
+                    <p class="article-snippet">An exhaustive tactical breakdown of how elite defenses counter heavy pick-and-roll systems, altering spatial geometry on the perimeter.</p>
+                </div>
+            </article>
+
+            <!-- Colonna Articoli in Evidenza Laterali -->
+            <div class="side-articles-column">
+                <div class="side-article-card">
+                    <div class="article-tag">Euroleague</div>
+                    <h3 class="side-article-title">The tactical evolution of drop coverages across European powerhouses.</h3>
+                </div>
+                <div class="side-article-card">
+                    <div class="article-tag">Scouting</div>
+                    <h3 class="side-article-title">Next-gen metrics: Evaluating off-ball gravity and tracking defensive impact.</h3>
+                </div>
+                <div class="side-article-card">
+                    <div class="article-tag">Opinion</div>
+                    <h3 class="side-article-title">Why pacing mechanics are rewriting regular season offensive ceilings.</h3>
+                </div>
             </div>
 
-            <div class="content-block">
-                <div class="block-title">Scores</div>
-                <ul class="scores-list">
-                    <li><span>LAL 112 - 105 BOS</span> <span class="top-scorer">Top: L. James (28 pts)</span></li>
-                    <li><span>GSW 120 - 115 PHX</span> <span class="top-scorer">Top: S. Curry (34 pts)</span></li>
-                    <li><span>DEN 118 - 110 MIL</span> <span class="top-scorer">Top: N. Jokić (30 pts)</span></li>
-                </ul>
-                <a href="#" class="see-more-link">See more &rarr;</a>
-            </div>
-
-            <div class="content-block">
-                <div class="block-title">Leaders</div>
-                <div class="placeholder-text">Leaderboard pending.</div>
-                <a href="#" class="see-more-link">See more &rarr;</a>
-            </div>
-
-            <div class="content-block">
-                <div class="block-title">Minigames</div>
-                <div class="placeholder-text">Setup in progress.</div>
-            </div>
         </div>
 
-        <!-- COLONNA EUROLEAGUE -->
-        <div class="hub-column">
-            <div class="hub-title">Euroleague</div>
+        <!-- Sezione Inferiore: Griglia di Articoli -->
+        <div class="secondary-articles-grid">
             
-            <div class="content-block">
-                <div class="block-title">Latest Deep Analysis</div>
-                <div class="placeholder-text">No articles published yet.</div>
+            <div class="grid-article-card">
+                <div class="grid-img-placeholder">[ ARTICLE THUMBNAIL ]</div>
+                <div class="grid-content">
+                    <div class="article-tag">NBA Analytics</div>
+                    <h3 class="grid-title">Pacing the floor: Corner three frequencies in transition offense.</h3>
+                </div>
             </div>
 
-            <div class="content-block">
-                <div class="block-title">Scores</div>
-                <ul class="scores-list">
-                    <li><span>RMB 89 - 84 OLY</span> <span class="top-scorer">Top: W. Tavares (22 pts)</span></li>
-                    <li><span>BAR 92 - 88 FEN</span> <span class="top-scorer">Top: K. Punter (25 pts)</span></li>
-                    <li><span>PAO 85 - 80 ASM</span> <span class="top-scorer">Top: K. Nunn (24 pts)</span></li>
-                </ul>
-                <a href="#" class="see-more-link">See more &rarr;</a>
+            <div class="grid-article-card">
+                <div class="grid-img-placeholder">[ ARTICLE THUMBNAIL ]</div>
+                <div class="grid-content">
+                    <div class="article-tag">Euroleague Focus</div>
+                    <h3 class="grid-title">Decoding defensive rotations inside the paint in tight clutch moments.</h3>
+                </div>
             </div>
 
-            <div class="content-block">
-                <div class="block-title">Leaders</div>
-                <div class="placeholder-text">Leaderboard pending.</div>
-                <a href="#" class="see-more-link">See more &rarr;</a>
+            <div class="grid-article-card">
+                <div class="grid-img-placeholder">[ ARTICLE THUMBNAIL ]</div>
+                <div class="grid-content">
+                    <div class="article-tag">Special Feature</div>
+                    <h3 class="grid-title">The blueprint of modern playmaking: Point guards masterclasses.</h3>
+                </div>
             </div>
 
-            <div class="content-block">
-                <div class="block-title">Minigames</div>
-                <div class="placeholder-text">Setup in progress.</div>
-            </div>
         </div>
 
-    </div>
+    </main>
 
     <footer>
         &copy; 2026 The Eurostep | Basketball Analysis. All rights reserved.
     </footer>
 
-    <!-- Script JavaScript -->
+    <!-- Motore 3D Particelle di Sfondo -->
     <script>
-        const menuBtn = document.getElementById('menuBtn');
-        const sidebarMenu = document.getElementById('sidebarMenu');
-        const closeBtn = document.getElementById('closeBtn');
-
-        menuBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            sidebarMenu.classList.add('active');
-        });
-
-        closeBtn.addEventListener('click', () => {
-            sidebarMenu.classList.remove('active');
-        });
-
-        window.addEventListener('click', (e) => {
-            if (!sidebarMenu.contains(e.target) && !menuBtn.contains(e.target)) {
-                sidebarMenu.classList.remove('active');
-            }
-        });
-
-        // Motore 3D Particelle
         const container = document.getElementById('webgl-container');
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
